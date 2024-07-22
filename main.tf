@@ -8,3 +8,5 @@ provider "aws" {
 resource "aws instance" "project_server" {
     ami
 }
+
+#
