@@ -4,6 +4,8 @@ resource "aws_s3_bucket" "website_bucket" {
 }
 
 resource "aws_s3_account_public_access_block" "website_bucket" {
+  bucket       = aws_s3_bucket.website_bucket.id
+
   block_public_acls   = true
   block_public_policy = true
   ignore_public_acls = true
@@ -142,6 +144,8 @@ output "cloudfront_url" {
   value = aws_cloudfront_distribution.cdn_static_site.domain_name
 }
 
+
+# JSON policy for public read access
 data "aws_iam_policy_document" "website_bucket" {
   statement {
     actions   = ["s3:GetObject"]
@@ -159,6 +163,13 @@ data "aws_iam_policy_document" "website_bucket" {
 }
 
 resource "aws_s3_bucket_policy" "website_bucket_policy" {
-  bucket = aws_s3_bucket.website_bucket.id
+  bucket = aws_s3_bucket.website_bucket.id # ID of the S3 bucket
   policy = data.aws_iam_policy_document.website_bucket.json
+}
+
+
+module "template_files" {
+    source = hashicorp/dir/template
+
+    base_dir = "${path.module}/web-files"
 }
