@@ -17,7 +17,7 @@ resource "aws_s3_account_public_access_block" "website_bucket" {
 resource "aws_s3_object" "website_bucket" {
   bucket       = aws_s3_bucket.website_bucket.id
   key          = "index.html"
-  source       = "index.html"
+  source       = "C:/Users/79122/p/terraform/web-files/templates/index.html"
   content_type = "text/html"
 }
 
@@ -25,24 +25,23 @@ resource "aws_s3_object" "website_bucket" {
 resource "aws_cloudfront_distribution" "cdn_static_site" {
   enabled             = true
   is_ipv6_enabled     = true
+  wait_for_deployment = true
   default_root_object = "index.html"
-  comment             = "my cloudfront in front of the s3 bucket"
 
   origin {
     domain_name              = aws_s3_bucket.website_bucket.bucket_regional_domain_name
-    origin_id                = "my-s3-origin"
-    origin_access_control_id = aws_cloudfront_origin_access_control.default.id
+    origin_id                = "my-s3-origin" 
+    origin_access_control_id = aws_cloudfront_origin_access_control.main.id
   }
 
   default_cache_behavior {
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "my-s3-origin"
     min_ttl                = 0
     default_ttl            = 0
     max_ttl                = 0
     viewer_protocol_policy = "redirect-to-https"
-
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "my-s3-origin"
 
     forwarded_values {
       query_string = false
@@ -61,8 +60,8 @@ resource "aws_cloudfront_distribution" "cdn_static_site" {
 
     viewer_certificate {
     acm_certificate_arn      = aws_acm_certificate.cert.arn
-    ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
+    ssl_support_method       = "sni-only"
   }
     
   aliases = [
@@ -130,21 +129,20 @@ resource "aws_route53_record" "www" {
 
 # Route 53 record for the root domain
 resource "aws_route53_record" "apex" {
-  zone_id = data.aws_route53_zone.zone.id
   name    = var.domain_name_simple
   type    = "A"
+  zone_id = data.aws_route53_zone.zone.id
 
   alias {
+    evaluate_target_health = false
     name                   = aws_cloudfront_distribution.cdn_static_site.domain_name
     zone_id                = aws_cloudfront_distribution.cdn_static_site.hosted_zone_id
-    evaluate_target_health = false
   }
 }
 
 # CloudFront origin access control
-resource "aws_cloudfront_origin_access_control" "default" {
-  name                              = "cloudfront OAC"
-  description                       = "description of OAC"
+resource "aws_cloudfront_origin_access_control" "main" {
+  name                              = "s3-cloudfront-oac"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
@@ -158,16 +156,18 @@ output "cloudfront_url" {
 # IAM policy document for CloudFront access to S3
 data "aws_iam_policy_document" "website_bucket" {
   statement {
-    actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.website_bucket.arn}/*"]
     principals {
       type        = "Service"
       identifiers = ["cloudfront.amazonaws.com"]
     }
+
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.website_bucket.arn}/*"]
+
     condition {
       test     = "StringEquals"
-      variable = "aws:SourceArn"
       values   = [aws_cloudfront_distribution.cdn_static_site.arn]
+      variable = "aws:SourceArn"
     }
   }
 }
