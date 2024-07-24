@@ -1,17 +1,19 @@
 # Resources Block
+
+# S3 Bucket for hosting static website files
 resource "aws_s3_bucket" "website_bucket" {
-  bucket = "nutritionist-website-bucket-11co11v"
+  bucket = "my-unique-bucket-name-12y398y13489148h"
 }
 
+# Block public access to the S3 bucket
 resource "aws_s3_account_public_access_block" "website_bucket" {
-  bucket       = aws_s3_bucket.website_bucket.id
-
   block_public_acls   = true
   block_public_policy = true
   ignore_public_acls = true
   restrict_public_buckets = true
 }
 
+# Upload the index.html file to the S3 bucket
 resource "aws_s3_object" "website_bucket" {
   bucket       = aws_s3_bucket.website_bucket.id
   key          = "index.html"
@@ -19,6 +21,7 @@ resource "aws_s3_object" "website_bucket" {
   content_type = "text/html"
 }
 
+# Cloudfront for website files distribution
 resource "aws_cloudfront_distribution" "cdn_static_site" {
   enabled             = true
   is_ipv6_enabled     = true
@@ -67,6 +70,7 @@ resource "aws_cloudfront_distribution" "cdn_static_site" {
     var.domain_name
   ]
 
+# ACM Certificate for HTTPS
 resource "aws_acm_certificate" "cert" {
   provider                  = aws.use_default_region
   domain_name               = "*.${var.domain_name_simple}"
@@ -144,8 +148,6 @@ output "cloudfront_url" {
   value = aws_cloudfront_distribution.cdn_static_site.domain_name
 }
 
-
-# JSON policy for public read access
 data "aws_iam_policy_document" "website_bucket" {
   statement {
     actions   = ["s3:GetObject"]
@@ -163,13 +165,6 @@ data "aws_iam_policy_document" "website_bucket" {
 }
 
 resource "aws_s3_bucket_policy" "website_bucket_policy" {
-  bucket = aws_s3_bucket.website_bucket.id # ID of the S3 bucket
+  bucket = aws_s3_bucket.website_bucket.id
   policy = data.aws_iam_policy_document.website_bucket.json
-}
-
-
-module "template_files" {
-    source = hashicorp/dir/template
-
-    base_dir = "${path.module}/web-files"
 }
