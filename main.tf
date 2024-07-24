@@ -2,7 +2,7 @@
 
 # S3 Bucket for hosting static website files
 resource "aws_s3_bucket" "website_bucket" {
-  bucket = "my-unique-bucket-name-12y398y13489148h"
+  bucket = "nutritionist-website-bucket-11co11v"
 }
 
 # Block public access to the S3 bucket
@@ -25,7 +25,6 @@ resource "aws_s3_object" "website_bucket" {
 resource "aws_cloudfront_distribution" "cdn_static_site" {
   enabled             = true
   is_ipv6_enabled     = true
-  wait_for_deployment = true
   default_root_object = "index.html"
 
   origin {
@@ -68,6 +67,7 @@ resource "aws_cloudfront_distribution" "cdn_static_site" {
     var.domain_name_simple,
     var.domain_name
   ]
+}
 
 # ACM Certificate for HTTPS
 resource "aws_acm_certificate" "cert" {
