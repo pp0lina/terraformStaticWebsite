@@ -82,12 +82,14 @@ resource "aws_acm_certificate" "cert" {
   }
 }
 
+# Route 53 hosted zone for the domain
 data "aws_route53_zone" "zone" {
   provider     = aws.use_default_region
   name         = var.domain_name_simple
   private_zone = false
 }
 
+# DNS validation records for ACM certificate
 resource "aws_route53_record" "cert_validation" {
   provider = aws.use_default_region
   for_each = {
@@ -106,12 +108,14 @@ resource "aws_route53_record" "cert_validation" {
   ttl             = 60
 }
 
+# Validating the ACM certificate
 resource "aws_acm_certificate_validation" "cert" {
   provider                = aws.use_default_region
   certificate_arn         = aws_acm_certificate.cert.arn
   validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }
 
+# Route 53 record for www subdomain
 resource "aws_route53_record" "www" {
   zone_id = data.aws_route53_zone.zone.id
   name    = "www.${var.domain_name_simple}"
@@ -124,6 +128,7 @@ resource "aws_route53_record" "www" {
   }
 }
 
+# Route 53 record for the root domain
 resource "aws_route53_record" "apex" {
   zone_id = data.aws_route53_zone.zone.id
   name    = var.domain_name_simple
@@ -136,6 +141,7 @@ resource "aws_route53_record" "apex" {
   }
 }
 
+# CloudFront origin access control
 resource "aws_cloudfront_origin_access_control" "default" {
   name                              = "cloudfront OAC"
   description                       = "description of OAC"
@@ -144,10 +150,12 @@ resource "aws_cloudfront_origin_access_control" "default" {
   signing_protocol                  = "sigv4"
 }
 
+# Output the CloudFront URL
 output "cloudfront_url" {
   value = aws_cloudfront_distribution.cdn_static_site.domain_name
 }
 
+# IAM policy document for CloudFront access to S3
 data "aws_iam_policy_document" "website_bucket" {
   statement {
     actions   = ["s3:GetObject"]
@@ -164,6 +172,7 @@ data "aws_iam_policy_document" "website_bucket" {
   }
 }
 
+# Applying the IAM policy to the S3 bucket
 resource "aws_s3_bucket_policy" "website_bucket_policy" {
   bucket = aws_s3_bucket.website_bucket.id
   policy = data.aws_iam_policy_document.website_bucket.json
