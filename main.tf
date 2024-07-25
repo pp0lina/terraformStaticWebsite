@@ -13,12 +13,14 @@ resource "aws_s3_account_public_access_block" "website_bucket" {
   restrict_public_buckets = true
 }
 
-# Upload the index.html file to the S3 bucket
-resource "aws_s3_object" "website_bucket" {
-  bucket       = aws_s3_bucket.website_bucket.id
-  key          = "index.html"
-  source       = "C:/Users/79122/p/terraform/web-files/templates/index.html"
-  content_type = "text/html"
+# Upload website files to the S3 bucket
+resource "aws_s3_object" "website_files" {
+  bucket  = aws_s3_bucket.website_bucket.id
+  for_each = fileset("C:/Users/79122/p/terraform/web-files", "**/*.*")
+
+  key    = each.value
+  source = "C:/Users/79122/p/terraform/web-files/${each.value}"
+  etag   = filemd5("C:/Users/79122/p/terraform/web-files/${each.value}")
 }
 
 # Cloudfront for website files distribution
