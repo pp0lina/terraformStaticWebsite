@@ -1,7 +1,7 @@
 from datetime import datetime
 # from flask_security import UserMixin, RoleMixin
 from flask import Flask, render_template, url_for, request, redirect, make_response
-from flask_sqlalchemy import SQLAlchemy
+""" from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
@@ -19,7 +19,7 @@ class Article(db.Model):
     def __repr__(self):
         return '<Article %r>' % self.id
 
-
+"""
 @app.route('/')
 @app.route('/home')
 def index():
@@ -42,7 +42,7 @@ def post_detail(id):
     article = Article.query.get(id)
     return render_template("post_detail.html", article=article)
 
-
+"""
 @app.route('/posts/<int:id>/del')
 def post_delete(id):
     article = Article.query.get_or_404(id)
@@ -90,7 +90,7 @@ def create_article():
     else:
         return render_template("create-article.html")
 
-
+"""
 @app.route("/login")
 def login():
     return render_template("login.html")
