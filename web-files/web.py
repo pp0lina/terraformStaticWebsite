@@ -42,7 +42,7 @@ def post_detail(id):
     article = Article.query.get(id)
     return render_template("post_detail.html", article=article)
 
-"""
+
 @app.route('/posts/<int:id>/del')
 def post_delete(id):
     article = Article.query.get_or_404(id)
@@ -90,7 +90,7 @@ def create_article():
     else:
         return render_template("create-article.html")
 
-"""
+
 @app.route("/login")
 def login():
     return render_template("login.html")
