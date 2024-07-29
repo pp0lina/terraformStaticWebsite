@@ -30,10 +30,6 @@ resource "aws_s3_object" "provision_source_files" {
 #  content_type = "text/html"
 #}
 
-resource "aws_cloudfront_origin_access_identity" "oai" {
-  comment = "OAI for my website"
-}
-
 # Cloudfront for website files distribution
 resource "aws_cloudfront_distribution" "cdn_static_site" {
   enabled             = true
@@ -170,8 +166,8 @@ output "cloudfront_url" {
 data "aws_iam_policy_document" "website_bucket" {
   statement {
     principals {
-      type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.oai.iam_arn]
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
     }
 
     actions   = ["s3:GetObject"]
