@@ -6,5 +6,5 @@ output "s3_bucket_website_url" {
 
 output "website_url" {
   description = "The URL of the website"
-  value       = "domain_name_simple"
+  value       = var.domain_name_simple
 }
