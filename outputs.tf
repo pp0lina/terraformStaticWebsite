@@ -4,6 +4,7 @@ output "s3_bucket_website_url" {
   value       = "http://${aws_s3_bucket.website_bucket.bucket}.s3-website.${var.region}.amazonaws.com"
 }
 
-output "cloudfront_url" {
-  value = aws_cloudfront_distribution.cdn_static_site.domain_name
+output "website_url" {
+  description = "The URL of the website"
+  value       = "domain_name_simple"
 }
