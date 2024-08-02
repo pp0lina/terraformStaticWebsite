@@ -10,11 +10,11 @@ terraform {
 
 provider "aws" {
     profile = "default"
-    region = "us-east-1"
+    region = var.region
 }
 
 provider "aws" {
     alias   = "use_default_region"
     profile = "default"
-    region  = "us-east-1"
+    region  = var.region
 }

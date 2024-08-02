@@ -4,6 +4,12 @@ resource "aws_s3_bucket" "website_bucket" {
   # acl    = "public-read"
 }
 
+# Add a bucket ACL
+resource "aws_s3_bucket_acl" "website_bucket_acl" {
+  bucket = aws_s3_bucket.website_bucket.id
+  acl    = "public-read"
+}
+
 # S3 Bucket Website Configuration
 resource "aws_s3_bucket_website_configuration" "website_config" {
   bucket = aws_s3_bucket.website_bucket.id
@@ -42,6 +48,7 @@ resource "aws_s3_object" "provision_source_files" {
 
     key    = each.value
     source = "web-files/templates/${each.value}"
+    content_type = "text/html"
 }
 
 # Cloudfront for website files distribution
@@ -182,19 +189,21 @@ resource "aws_route53_record" "apex" {
 # IAM policy document for CloudFront access to S3
 data "aws_iam_policy_document" "allow_public_read" {
   statement {
-    actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.website_bucket.arn}/*"]
+    sid    = "PublicReadGetObject"
+    effect = "Allow"
+
+    actions = [
+      "s3:GetObject",
+    ]
 
     principals {
-      type        = "Service"
-      identifiers = ["cloudfront.amazonaws.com"]
+      type        = "AWS"
+      identifiers = [
+        "*"
+        ]
     }
 
-    condition {
-      test     = "StringEquals"
-      variable = "aws:SourceArn"
-      values   = [aws_cloudfront_distribution.cdn_static_site.arn]
-    }
+    resources = ["${aws_s3_bucket.website_bucket.arn}/*"]
   }
 }
 
