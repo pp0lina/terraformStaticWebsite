@@ -33,7 +33,7 @@
             font-weight: 400;
             padding: 50px;
             border-radius: 10px;
-            min-height: 50vh; /* Each section takes half of the viewport height */
+            min-height: 50vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -51,11 +51,22 @@
 
         /* Second section background and text animation with delay */
         .fade-in-section-2 {
-            background-image: url('https://img.freepik.com/free-photo/buddha-bowl-dish-with-vegetables-legumes-top-view_1150-42589.jpg');
-            min-height: 90vh;
-            animation-delay: 3s;
-            color: #ffffff;
-            text-shadow: 1px 1px 2px rgba(33, 33, 33, 0.8);
+          background-image: url('https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?cs=srgb&dl=pexels-janetrangdoan-1092730.jpg&fm=jpg');
+          min-height: 90vh;
+          animation-delay: 0s;
+          color: #0f0f0f;
+          text-shadow: 1px 1px 2px rgba(33, 33, 33, 0.8);
+          /* Ensure the text has a background color for better readability */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+        }
+
+        .fade-in-section-2 h1, .fade-in-section-2 p {
+          background-color: rgba(255, 255, 255, 0.7); /* Light semi-transparent white */
+          padding: 10px; /* Optional: add padding for spacing */
+          border-radius: 5px; /* Optional: rounded corners */
         }
 
         /* Fade-in animation keyframes */
@@ -104,26 +115,26 @@
 </head>
 <body>
     <!-- Header section -->
-    <header class="container border-bottom lh-3 py-3">
-        <div class="row flex-nowrap justify-content-between align-items-center">
-            <div class="container col-6 text-center">
-                <a class="blog-header-logo text-body-emphasis text-decoration-none" href="#">
-                    <h4>Nutrition. All about wellness.</h4>
-                </a>
-            </div>
-            <div class="col-4 d-flex justify-content-end align-items-center">
-                <a class="link-secondary" href="#" aria-label="Search">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
-                         stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img"
-                         viewBox="0 0 24 24">
-                        <title>Search</title>
-                        <circle cx="10.5" cy="10.5" r="7.5"></circle>
-                        <path d="M21 21l-5.2-5.2"></path>
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </header>
+<header class="container-fluid border-bottom lh-3 py-3">
+  <div class="row flex-nowrap justify-content-between align-items-center">
+      <div class="col-6 text-center">
+          <a class="blog-header-logo text-body-emphasis text-decoration-none" href="#">
+              <h4>Nutrition. All about wellness.</h4>
+          </a>
+      </div>
+      <div class="col-4 d-flex justify-content-end align-items-center">
+          <a class="link-secondary" href="#" aria-label="Search">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                   stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img"
+                   viewBox="0 0 24 24">
+                  <title>Search</title>
+                  <circle cx="10.5" cy="10.5" r="7.5"></circle>
+                  <path d="M21 21l-5.2-5.2"></path>
+              </svg>
+          </a>
+      </div>
+  </div>
+</header>
 
     <!-- First fade-in section with the first half of the text and first image -->
     <section class="fade-in-section fade-in-section-1">
