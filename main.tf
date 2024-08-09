@@ -34,7 +34,7 @@ resource "aws_s3_object" "provision_source_files" {
 resource "aws_cloudfront_distribution" "cdn_static_site" {
   enabled             = true
   is_ipv6_enabled     = true
-  default_root_object = "index.html"
+  default_root_object = "base.html"
 
   origin {
     domain_name              = aws_s3_bucket.website_bucket.bucket_regional_domain_name
