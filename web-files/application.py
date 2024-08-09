@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 application = Flask(__name__)
 application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+db = SQLAlchemy(application)
 
 
 class Article(db.Model):
