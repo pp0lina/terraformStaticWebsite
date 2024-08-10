@@ -63,6 +63,43 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+
+        .offer-section {
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .offer-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .arrow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .arrow-icon {
+            font-size: 2rem;
+            color: #333;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-15px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
     </style>
 </head>
 <body>
