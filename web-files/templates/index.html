@@ -205,20 +205,19 @@
       </div>
 
       <div class="col-md-5 offset-md-1 mb-3">
-        <form>
-          <h6>Feedback :</h6>
-          <div class="d-flex flex-column flex-sm-row w-100 gap-2">
-            <label for="newsletter1" class="visually-hidden">Email address</label>
-            <input id="newsletter1" type="text" class="form-control my-md-2 pt-md-2" placeholder="Your email address">
-          </div>
-             <div class="d-flex flex-column flex-sm-row w-100 gap-2">
-            <label for="newsletter1" class="visually-hidden">Message text</label>
-            <input id="newsletter2" type="text" class="form-control my-md-2 pt-md-2" placeholder="Your message">
-            <button class="btn btn-primary my-md-2 pt-md-2" type="button">Send</button>
-          </div>
+        <form action="mailto:your-email@example.com" method="post" enctype="text/plain">
+            <h6>Feedback :</h6>
+            <div class="d-flex flex-column flex-sm-row w-100 gap-2 mb-3">
+                <label for="email" class="visually-hidden">Email address</label>
+                <input id="email" name="email" type="email" class="form-control" placeholder="Your email address" required>
+            </div>
+            <div class="d-flex flex-column flex-sm-row w-100 gap-2 mb-3">
+                <label for="message" class="visually-hidden">Message text</label>
+                <textarea id="message" name="message" class="form-control" placeholder="Your message" rows="4" required></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit">Send</button>
         </form>
-      </div>
-    </div>
+    </div>    
 
     <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
       <p>© 2024 All right reserved.</p>
