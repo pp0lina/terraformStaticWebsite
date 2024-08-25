@@ -1,6 +1,7 @@
 # S3 Bucket for hosting static website files
 resource "aws_s3_bucket" "website_bucket" {
   bucket = var.bucket_name
+  # acl    = "public-read"
 }
 
 # S3 Bucket Website Configuration
@@ -22,12 +23,6 @@ resource "aws_s3_bucket_cors_configuration" "cors_config" {
     allowed_origins = ["https://${var.domain_name}"]
     max_age_seconds = 3000
   }
-}
-
-# S3 Bucket ACL (Public Read)
-resource "aws_s3_bucket_acl" "website_bucket_acl" {
-  bucket = aws_s3_bucket.website_bucket.id
-  acl    = "public-read"
 }
 
 # Block public access to the S3 bucket at the account level
