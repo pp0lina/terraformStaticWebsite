@@ -188,3 +188,6 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
   policy = data.aws_iam_policy_document.website_bucket.json
 }
 
+# ...
+
+# I returned the docstrings
