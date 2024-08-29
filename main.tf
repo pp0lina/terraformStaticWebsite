@@ -54,7 +54,7 @@ resource "aws_cloudfront_distribution" "cdn_static_site" {
     origin {
     domain_name              = aws_s3_bucket.website_bucket.bucket_regional_domain_name
     origin_id                = "my-s3-origin" 
-    origin_access_control_id = aws_cloudfront_origin_access_control.main.id
+    # origin_access_control_id = aws_cloudfront_origin_access_control.main.id
     
     custom_origin_config {
       http_port              = 80
