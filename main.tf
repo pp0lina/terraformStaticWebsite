@@ -10,6 +10,11 @@ resource "aws_s3_bucket_website_configuration" "website_config" {
   index_document {
     suffix = "index.html"
   }
+}
+
+# S3 Bucket CORS Configuration
+resource "aws_s3_bucket_cors_configuration" "cors_config" {
+  bucket = aws_s3_bucket.website_bucket.id
 
   cors_rule {
     allowed_headers = ["Authorization", "Content-Length"]
@@ -101,12 +106,12 @@ resource "aws_cloudfront_distribution" "cdn_static_site" {
 }
 
 # CloudFront origin access control
-resource "aws_cloudfront_origin_access_control" "main" {
-  name                              = "cloudfront oac"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
-}
+#resource "aws_cloudfront_origin_access_control" "main" {
+#  name                              = "cloudfront oac"
+#  origin_access_control_origin_type = "s3"
+#  signing_behavior                  = "always"
+#  signing_protocol                  = "sigv4"
+#}
 
 # SSL Certificate for HTTPS
 resource "aws_acm_certificate" "ssl_certificate" {
@@ -182,17 +187,19 @@ resource "aws_route53_record" "apex" {
 # IAM policy document for CloudFront access to S3
 data "aws_iam_policy_document" "allow_public_read" {
   statement {
-    actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.website_bucket.arn}/*"]
+    sid    = "PublicReadGetObject"
+    effect = "Allow"
+
+    actions = [
+      "s3:GetObject",
+    ]
+
     principals {
-      type        = "Service"
-      identifiers = ["cloudfront.amazonaws.com"]
+      type        = "AWS"
+      identifiers = "*"
     }
-    condition {
-      test     = "StringEquals"
-      variable = "aws:SourceArn"
-      values   = [aws_cloudfront_distribution.cdn_static_site.arn]
-    }
+
+    resources = ["${aws_s3_bucket.website_bucket.arn}/*"]
   }
 }
 
