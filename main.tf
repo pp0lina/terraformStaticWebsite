@@ -187,3 +187,8 @@ data "aws_iam_policy_document" "allow_public_read" {
 }
 
 # Adding the policy for the S3 bucket
+resource "aws_s3_bucket_policy" "website_bucket_policy" {
+  bucket = aws_s3_bucket.website_bucket.id
+  policy = data.aws_iam_policy_document.allow_public_read.json
+}
+
