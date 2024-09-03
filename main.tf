@@ -2,7 +2,6 @@
 resource "aws_s3_bucket" "website_bucket" {
   bucket        = "ekaterina-nutritionist.com"
   acl    = "public-read"
-  policy = data.aws_iam_policy_document.allow_public_read.json
 
     cors_rule {
     allowed_headers = ["Authorization", "Content-Length"]
@@ -33,23 +32,6 @@ resource "aws_s3_object" "provision_source_files" {
 
     key    = each.value
     source = "web-files/templates/${each.value}"
-}
-
-# IAM policy document for CloudFront access to S3
-data "aws_iam_policy_document" "allow_public_read" {
-  statement {
-    actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.website_bucket.arn}/*"]
-    principals {
-      type        = "Service"
-      identifiers = ["cloudfront.amazonaws.com"]
-    }
-    condition {
-      test     = "StringEquals"
-      variable = "aws:SourceArn"
-      values   = [aws_cloudfront_distribution.cdn_static_site.arn]
-    }
-  }
 }
 
 # Cloudfront for website files distribution
@@ -181,8 +163,8 @@ resource "aws_route53_record" "apex" {
   zone_id = data.aws_route53_zone.zone.id
 
   alias {
-    evaluate_target_health = false
     name                   = aws_cloudfront_distribution.cdn_static_site.domain_name
     zone_id                = aws_cloudfront_distribution.cdn_static_site.hosted_zone_id
+    evaluate_target_health = false
   }
 }
