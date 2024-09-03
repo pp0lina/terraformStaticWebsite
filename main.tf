@@ -185,3 +185,5 @@ data "aws_iam_policy_document" "allow_public_read" {
     }
   }
 }
+
+# Adding the policy for the S3 bucket
