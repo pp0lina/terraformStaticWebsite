@@ -168,3 +168,20 @@ resource "aws_route53_record" "apex" {
     evaluate_target_health = false
   }
 }
+
+# IAM policy document for CloudFront access to S3
+data "aws_iam_policy_document" "allow_public_read" {
+  statement {
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.website_bucket.arn}/*"]
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceArn"
+      values   = [aws_cloudfront_distribution.cdn_static_site.arn]
+    }
+  }
+}
