@@ -9,12 +9,7 @@ terraform {
 }
 
 provider "aws" {
+    alias   = "use_default_region"
     profile = "default"
     region = "us-east-1"
 }
-
-# provider "aws" {
-#  alias   = "use_default_region"
-#  profile = "default"
-#  region  = "us-east-1"
-#}
