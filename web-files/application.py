@@ -125,3 +125,4 @@ if __name__ == '__main__':
 class User(db.Model, UserMixin):
     id = db.Column()
 """
+
