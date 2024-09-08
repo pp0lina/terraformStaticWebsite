@@ -22,14 +22,6 @@ resource "aws_s3_object" "provision_source_files" {
     source = "web-files/${each.value}"
 }
 
-# Upload the index.html file to the S3 bucket
-#resource "aws_s3_object" "website_bucket" {
-#  bucket       = aws_s3_bucket.website_bucket.id
-#  key          = "index.html"
-#  source       = "C:/Users/79122/p/terraform/web-files/templates/index.html"
-#  content_type = "text/html"
-#}
-
 # Cloudfront for website files distribution
 resource "aws_cloudfront_distribution" "cdn_static_site" {
   enabled             = true
