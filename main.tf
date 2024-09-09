@@ -135,6 +135,25 @@ data "aws_route53_zone" "zone" {
   private_zone = false
 }
 
+# DNS validation records for ACM certificate
+resource "aws_route53_record" "cert_validation" {
+  provider = aws.use_default_region
+  for_each = {
+    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  }
+
+  allow_overwrite = true
+  name            = each.value.name
+  records         = [each.value.record]
+  type            = each.value.type
+  zone_id         = data.aws_route53_zone.zone.zone_id
+  ttl             = 60
+}
+
 # Validating the certificate
 resource "aws_acm_certificate_validation" "cert" {
   provider                = aws.use_default_region
@@ -168,21 +187,3 @@ resource "aws_route53_record" "apex" {
   }
 }
 
-# DNS validation records for ACM certificate
-resource "aws_route53_record" "cert_validation" {
-  provider = aws.use_default_region
-  for_each = {
-    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      record = dvo.resource_record_value
-      type   = dvo.resource_record_type
-    }
-  }
-
-  allow_overwrite = true
-  name            = each.value.name
-  records         = [each.value.record]
-  type            = each.value.type
-  zone_id         = data.aws_route53_zone.zone.zone_id
-  ttl             = 60
-}
