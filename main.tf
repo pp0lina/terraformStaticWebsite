@@ -128,18 +128,18 @@ resource "aws_acm_certificate" "ssl_certificate" {
   }
 }
 
-# Validating the certificate
-resource "aws_acm_certificate_validation" "cert" {
-  provider                = aws.use_default_region
-  certificate_arn         = aws_acm_certificate.ssl_certificate.arn
-  validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
-}
-
 # Route 53 hosted zone for the domain
 data "aws_route53_zone" "zone" {
   provider     = aws.use_default_region
   name         = var.domain_name_simple
   private_zone = false
+}
+
+# Validating the certificate
+resource "aws_acm_certificate_validation" "cert" {
+  provider                = aws.use_default_region
+  certificate_arn         = aws_acm_certificate.ssl_certificate.arn
+  validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }
 
 # Route 53 record for www subdomain
