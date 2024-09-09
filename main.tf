@@ -186,4 +186,3 @@ resource "aws_route53_record" "apex" {
     zone_id                = aws_cloudfront_distribution.cdn_static_site.hosted_zone_id
   }
 }
-
