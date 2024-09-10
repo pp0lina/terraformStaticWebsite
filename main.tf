@@ -1,6 +1,6 @@
 # S3 Bucket for hosting static website files
 resource "aws_s3_bucket" "website_bucket" {
-  bucket        = "ekaterina-nutritionist.com"
+  bucket        = var.bucket_name
   acl    = "public-read"
 
     cors_rule {
@@ -79,7 +79,7 @@ resource "aws_cloudfront_distribution" "cdn_static_site" {
   }
 
     viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate.cert.arn
+    acm_certificate_arn      = aws_acm_certificate.ssl_certificate.arn
     minimum_protocol_version = "TLSv1.2_2021"
     ssl_support_method       = "sni-only"
   }
@@ -121,7 +121,7 @@ data "aws_route53_zone" "zone" {
 resource "aws_route53_record" "cert_validation" {
   provider = aws.use_default_region
   for_each = {
-    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
+    for dvo in aws_acm_certificate.ssl_certificate.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       record = dvo.resource_record_value
       type   = dvo.resource_record_type
