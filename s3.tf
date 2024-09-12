@@ -29,10 +29,10 @@ resource "aws_s3_bucket" "website_bucket" {
 resource "aws_s3_object" "provision_source_files" {
     bucket  = aws_s3_bucket.website_bucket.id
 
-    for_each = fileset("web-files/", "**/*.*")
+    for_each = fileset("web-files/templates/", "**/*.*")
 
     key    = each.value
-    source = "web-files/${each.value}"
+    source = "web-files/templates/${each.value}"
 }
 
 # IAM policy document for CloudFront access to S3
