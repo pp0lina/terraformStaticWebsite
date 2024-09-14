@@ -2,20 +2,23 @@
 
 # S3 Bucket for hosting static website files
 resource "aws_s3_bucket" "website_bucket" {
-  bucket = "nutritionist-website-bucket-11co11v"
+  bucket        = "ekaterina-nutritionist.com"
+  force_destroy = true
 }
 
-# Block public access to the S3 bucket
-resource "aws_s3_account_public_access_block" "website_bucket" {
-  block_public_acls   = true
-  block_public_policy = true
-  ignore_public_acls = true
-  restrict_public_buckets = true
+# Block public access to the S3 bucket at the account level
+resource "aws_s3_bucket_public_access_block" "website_bucket" {
+  bucket                  = aws_s3_bucket.website_bucket.id
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 
 # Upload website files to the S3 bucket
 resource "aws_s3_object" "provision_source_files" {
     bucket  = aws_s3_bucket.website_bucket.id
+
     for_each = fileset("web-files/", "**/*.*")
 
     key    = each.value
@@ -70,8 +73,8 @@ resource "aws_cloudfront_distribution" "cdn_static_site" {
   ]
 }
 
-# ACM Certificate for HTTPS
-resource "aws_acm_certificate" "cert" {
+# SSL Certificate for HTTPS
+resource "aws_acm_certificate" "ssl_certificate" {
   provider                  = aws.use_default_region
   domain_name               = "*.${var.domain_name_simple}"
   validation_method         = "DNS"
@@ -82,32 +85,6 @@ resource "aws_acm_certificate" "cert" {
   }
 }
 
-# Route 53 hosted zone for the domain
-data "aws_route53_zone" "zone" {
-  provider     = aws.use_default_region
-  name         = var.domain_name_simple
-  private_zone = false
-}
-
-# DNS validation records for ACM certificate
-resource "aws_route53_record" "cert_validation" {
-  provider = aws.use_default_region
-  for_each = {
-    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      record = dvo.resource_record_value
-      type   = dvo.resource_record_type
-    }
-  }
-
-  allow_overwrite = true
-  name            = each.value.name
-  records         = [each.value.record]
-  type            = each.value.type
-  zone_id         = data.aws_route53_zone.zone.zone_id
-  ttl             = 60
-}
-
 # Validating the ACM certificate
 resource "aws_acm_certificate_validation" "cert" {
   provider                = aws.use_default_region
@@ -115,35 +92,9 @@ resource "aws_acm_certificate_validation" "cert" {
   validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }
 
-# Route 53 record for www subdomain
-resource "aws_route53_record" "www" {
-  zone_id = data.aws_route53_zone.zone.id
-  name    = "www.${var.domain_name_simple}"
-  type    = "A"
-
-  alias {
-    name                   = aws_cloudfront_distribution.cdn_static_site.domain_name
-    zone_id                = aws_cloudfront_distribution.cdn_static_site.hosted_zone_id
-    evaluate_target_health = false
-  }
-}
-
-# Route 53 record for the root domain
-resource "aws_route53_record" "apex" {
-  name    = var.domain_name_simple
-  type    = "A"
-  zone_id = data.aws_route53_zone.zone.id
-
-  alias {
-    evaluate_target_health = false
-    name                   = aws_cloudfront_distribution.cdn_static_site.domain_name
-    zone_id                = aws_cloudfront_distribution.cdn_static_site.hosted_zone_id
-  }
-}
-
 # CloudFront origin access control
 resource "aws_cloudfront_origin_access_control" "main" {
-  name                              = "s3-cloudfront-oac"
+  name                              = "cloudfront oac"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
@@ -172,7 +123,6 @@ data "aws_iam_policy_document" "website_bucket" {
     }
   }
 }
-
 
 # Applying the IAM policy to the S3 bucket
 resource "aws_s3_bucket_policy" "website_bucket_policy" {

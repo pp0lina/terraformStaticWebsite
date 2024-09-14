@@ -14,7 +14,7 @@ provider "aws" {
 }
 
 provider "aws" {
-   alias   = "use_default_region"
-  profile = "default"
-  region  = "us-east-1"
+    alias   = "use_default_region"
+    profile = "default"
+    region  = "us-east-1"
 }
