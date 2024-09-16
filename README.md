@@ -25,7 +25,7 @@ This Terraform project sets up the following AWS infrastructure:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/your-repo.git
+git clone https://github.com/pp0lina/terraformStaticWebsite.git
 cd your-repo
 ```
 
