@@ -26,7 +26,6 @@ This Terraform project sets up the following AWS infrastructure:
 
 ```bash
 git clone https://github.com/pp0lina/terraformStaticWebsite.git
-cd your-repo
 ```
 
 ### 2. Configure AWS Credentials
