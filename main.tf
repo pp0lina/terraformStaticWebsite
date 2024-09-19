@@ -1,7 +1,6 @@
 # S3 Bucket for hosting static website files
 resource "aws_s3_bucket" "website_bucket" {
   bucket = var.bucket_name
-  # acl    = "public-read"
 }
 
 # Add a bucket ACL
@@ -31,15 +30,6 @@ resource "aws_s3_bucket_cors_configuration" "cors_config" {
   }
 }
 
-# Block public access to the S3 bucket at the account level
-#resource "aws_s3_bucket_public_access_block" "website_bucket" {
-#  bucket                  = aws_s3_bucket.website_bucket.id
-#  block_public_acls       = false
-#  block_public_policy     = false
-#  ignore_public_acls      = false
-#  restrict_public_buckets = false
-#}
-
 # Upload website files to the S3 bucket
 resource "aws_s3_object" "provision_source_files" {
     bucket  = aws_s3_bucket.website_bucket.id
@@ -55,8 +45,7 @@ resource "aws_s3_object" "provision_source_files" {
 resource "aws_cloudfront_distribution" "cdn_static_site" {
     origin {
     domain_name              = aws_s3_bucket.website_bucket.bucket_regional_domain_name
-    origin_id                = "my-s3-origin" 
-    # origin_access_control_id = aws_cloudfront_origin_access_control.main.id
+    origin_id                = "my-s3-origin"
     
     custom_origin_config {
       http_port              = 80
@@ -106,14 +95,6 @@ resource "aws_cloudfront_distribution" "cdn_static_site" {
     var.domain_name
   ]
 }
-
-# CloudFront origin access control
-#resource "aws_cloudfront_origin_access_control" "main" {
-#  name                              = "cloudfront oac"
-#  origin_access_control_origin_type = "s3"
-#  signing_behavior                  = "always"
-#  signing_protocol                  = "sigv4"
-#}
 
 # SSL Certificate for HTTPS
 resource "aws_acm_certificate" "ssl_certificate" {
