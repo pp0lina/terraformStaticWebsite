@@ -1,6 +1,6 @@
 # Provides the variable values
-bucket_name = "ekaterina-nutritionist.com"
-domain_name_simple = "ekaterina-nutritionist.com"
-domain_name = "www.ekaterina-nutritionist.com"
+bucket_name = "example.com"
+domain_name_simple = "example.com"
+domain_name = "www.example.com"
 
 region = "us-east-1"
