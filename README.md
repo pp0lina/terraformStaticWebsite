@@ -1,5 +1,7 @@
 # Hosting a static website on AWS using Terraform
 
+![](img/Blank diagram.jpeg)
+
 This Terraform project sets up the following AWS infrastructure:
 
 - **S3 Bucket**: For storing static assets.
