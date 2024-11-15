@@ -1,13 +1,13 @@
 # Hosting a static website on AWS using Terraform
 
-![](img/Blank diagram.jpeg)
-
 This Terraform project sets up the following AWS infrastructure:
 
 - **S3 Bucket**: For storing static assets.
 - **CloudFront Distribution**: For serving content from the S3 bucket.
 - **Route 53**: For managing DNS records and routing domain traffic.
 - **AWS Certificate Manager (ACM)**: For provisioning and managing SSL/TLS certificates.
+
+![Alt text](img/Blank%20diagram.jpeg)
 
 ## Requirements
 
