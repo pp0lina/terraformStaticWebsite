@@ -85,4 +85,4 @@ Notes
 Contributing
 ------
 
-If you spot something that could be improved or have any ideas to make this project better, feel free to contribute!
+If you notice something that could be improved or have any ideas to make this project better, feel free to contribute!
